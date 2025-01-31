@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/danielllmuniz/go-http-server/internal/jsonutils"
@@ -13,9 +14,13 @@ import (
 func (api *Api) handleCreateProduct(w http.ResponseWriter, r *http.Request) {
 	data, problems, err := jsonutils.DecodeValidJson[product.CreateProductReq](r)
 	if err != nil {
+		fmt.Println(err.Error())
+		fmt.Println(problems)
+
 		jsonutils.EncodeJson(w, r, http.StatusUnprocessableEntity, problems)
 		return
 	}
+	fmt.Printf("handleCreateProduct\n")
 
 	userID, ok := api.Sessions.Get(r.Context(), "AuthenticatedUserId").(uuid.UUID)
 	if !ok {
